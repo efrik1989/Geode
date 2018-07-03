@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Geode</string>
+    <string name="send_button">Отправить</string>
+    <string name="congratulation">Happy birthday!</string>
+    <string name="image_description">Image!</string>
+    <string name="next_button_description">Next!</string>
+    <string name="label_email_text_editor">e-mail:</string>
+    <string name="congratulations_texteditor">Ваши поздравления:</string>
+    <string name="acceptbutton_text">Подтвердить</string>
+    <string name="subject_hint">Тема письма:</string>
+</resources>
