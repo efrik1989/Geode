@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorRGBA">#33000000</color>
     <color name="white_hint">#FFFFFF</color>
+    <color name="button_disabled_color">#A9A9A9</color>
+    <color name="button_pressed_color">#708090</color>
 </resources>

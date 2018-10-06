@@ -8,12 +8,11 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,19 +24,15 @@ import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
     private static final String EXTRA_IMAGE_FILE_PATH = "com.example.k.geode.extra_image_file_path";
-    private static final String EXTRA_IMAGE_OBJECT = "com.example.k.geode.extra_image_object";
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
 
     private static final String TAG = "Geode";
 
     private Button mFileSelectorButton;
-    private ImageButton mNextButton;
     private Button mSendButton;
     private ImageView mImage;
     private Bitmap yourSelectedImage;
     private String filePath;
-
-    private LruCache<String, Bitmap> mMemoryCache;
 
 
     @Override
@@ -48,14 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         mImage = (ImageView) findViewById(R.id.image_birthday);
         mImage.setImageResource(R.drawable.images);
-
-        mNextButton = (ImageButton) findViewById(R.id.next_imageButton);
-        mNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
         mSendButton = (Button) findViewById(R.id.send_button);
         mSendButton.setOnClickListener(new View.OnClickListener() {
@@ -78,27 +65,21 @@ public class MainActivity extends AppCompatActivity {
         mFileSelectorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "Select Button Pressed");
                 try {
+                    // Проверка разрешения на использованине файлов из галареи
                     if (ContextCompat.checkSelfPermission(MainActivity.this,
                             Manifest.permission.READ_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
 
-                        // Permission is not granted
-                        // Should we show an explanation?
                         if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
                                 Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                            // Show an explanation to the user *asynchronously* -- don't block
-                            // this thread waiting for the user's response! After the user
-                            // sees the explanation, try again to request the permission.
+                            // что-то здесь должно быть... надо подумать.
+
                         } else {
-                            // No explanation needed; request the permission
                             ActivityCompat.requestPermissions(MainActivity.this,
                                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                                     MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-                            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                            // app-defined int constant. The callback method gets the
-                            // result of the request.
                         }
 
                     } else {
@@ -124,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        buttonEnabledChek(yourSelectedImage);
         Log.d(TAG, "onResume() called");
     }
 
@@ -185,11 +167,20 @@ public class MainActivity extends AppCompatActivity {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
-                return;
             }
 
             // other 'case' lines to check for other
             // permissions this app might request.
+        }
+    }
+
+    public void buttonEnabledChek(Bitmap yourSelectedImage) {
+        if (yourSelectedImage == null) {
+            mSendButton.setEnabled(false);
+            mSendButton.setTextColor(Color.DKGRAY);
+        } else {
+            mSendButton.setEnabled(true);
+            mSendButton.setTextColor(Color.WHITE);
         }
     }
 

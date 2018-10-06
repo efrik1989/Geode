@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,12 +19,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+
+
+/** Класс используется для отправки открытки по e-mail или социалки
+ *
+ */
 
 public class SendEmailActivity extends Activity {
-    private static final String EXTRA_IMAGE_ID = "com.example.k.geode.extra_image_id";
-    private static final String EXTRA_IMAGE_NAME = "com.example.k.geode.extra_image_name";
-    private static final String EXTRA_IMAGE_OBJECT = "com.example.k.geode.extra_image_object";
     private static final String EXTRA_IMAGE_FILE_PATH = "com.example.k.geode.extra_image_file_path";
 
     private static final String TAG = "Geode";
@@ -33,6 +37,9 @@ public class SendEmailActivity extends Activity {
     private EditText mCongratulations;
     private Bitmap yourSelectedImage;
     private String filePath;
+    private DrawView mDrawView;
+    private Canvas canvas;
+    private Bitmap mutableBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +59,13 @@ public class SendEmailActivity extends Activity {
 
         mSubject = (EditText) findViewById(R.id.subject);
 
+        //назначение экземляра класса прорисовки
+        mDrawView = new DrawView(SendEmailActivity.this);
+
         mAcceptButton = (Button) findViewById(R.id.accept_button);
         mAcceptButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                File file = new File("app/src/main/res/drawable/");
 
                 final Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.setType("text/plain");
@@ -67,12 +76,16 @@ public class SendEmailActivity extends Activity {
                 emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mSubject.getText().toString());
                 emailIntent.setType("text/plain");
 
-                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, mCongratulations.getText().toString());
 
+
+                mutableBitmap = yourSelectedImage.copy(Bitmap.Config.ARGB_8888, true);
+
+                //прорисовка начинается здесь
+                canvas = new Canvas(mutableBitmap);
+                mDrawView.draw(canvas);
 
                 try {
-
-                    Uri imageUri = getImageUri(getApplicationContext(), yourSelectedImage);
+                    Uri imageUri = getImageUri(getApplicationContext(), mutableBitmap);
                     emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, imageUri);
                     emailIntent.setType("image/*");
 
@@ -81,6 +94,8 @@ public class SendEmailActivity extends Activity {
                 }
 
                 SendEmailActivity.this.startActivity(Intent.createChooser(emailIntent, "Отправка письма..."));
+
+                mutableBitmap.recycle();
             }
         });
 
@@ -91,5 +106,32 @@ public class SendEmailActivity extends Activity {
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
+    }
+
+    // Класс отрисовки поздравления в изображении
+
+    public class DrawView extends View {
+
+        Paint mPaint;
+
+        public DrawView(Context context) {
+            super(context);
+            mPaint = new Paint();
+        }
+        @Override
+        public void onDraw(Canvas canvas){
+            Log.d(TAG, "onDraw() called");
+
+            mPaint.setTextSize(100);
+            mPaint.setColor(Color.WHITE);
+            mPaint.setTextAlign(Paint.Align.CENTER);
+            mPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
+            canvas.drawText(mSubject.getText().toString(),canvas.getWidth() / 2,canvas.getHeight()/2 + 500, mPaint);
+
+            canvas.drawText(mCongratulations.getText().toString(), canvas.getWidth() / 2,canvas.getHeight()/2 + 1500, mPaint);
+
+            canvas.setBitmap(mutableBitmap);
+        }
     }
 }
