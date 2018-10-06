@@ -8,4 +8,5 @@
     <string name="congratulations_texteditor">Ваши поздравления:</string>
     <string name="acceptbutton_text">Подтвердить</string>
     <string name="subject_hint">Тема письма:</string>
+    <string name="file_selector_button">Выбрать</string>
 </resources>

@@ -2,7 +2,7 @@ package com.example.k.geode;
 
 import android.widget.ImageView;
 
-public class Image {
+public class  Image {
     private int mResId;
     private String mImageName;
 

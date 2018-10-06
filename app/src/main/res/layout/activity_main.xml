@@ -32,14 +32,13 @@
         android:id="@+id/send_button"
         android:layout_width="wrap_content"
         android:layout_height="61dp"
-        android:layout_alignTop="@id/next_imageButton"
+        android:layout_alignTop="@+id/next_imageButton"
         android:layout_centerHorizontal="true"
         android:background="@color/colorRGBA"
         android:padding="6dp"
         android:text="@string/send_button"
-        android:textSize="28sp"
         android:textColor="@android:color/white"
-        />
+        android:textSize="28sp" />
 
     <ImageButton
         android:id="@+id/next_imageButton"
@@ -49,10 +48,20 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="18dp"
         android:layout_marginEnd="0dp"
+        android:background="@color/colorRGBA"
         android:contentDescription="@string/next_button_description"
         android:padding="6dp"
-        android:src="@drawable/right_arrow"
+        android:src="@drawable/right_arrow" />
+
+    <Button
+        android:id="@+id/file_selector_button"
+        android:layout_width="88dp"
+        android:layout_height="61dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/send_button"
         android:background="@color/colorRGBA"
-        />
+        android:text="@string/file_selector_button"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"/>
 
 </RelativeLayout>
