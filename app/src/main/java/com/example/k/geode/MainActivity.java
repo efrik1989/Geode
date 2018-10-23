@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
                                 Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                            // что-то здесь должно быть... надо подумать.
+                            Log.d(TAG, "Permission is not Granted");
 
                         } else {
                             ActivityCompat.requestPermissions(MainActivity.this,
@@ -139,16 +138,22 @@ public class MainActivity extends AppCompatActivity {
                     Uri selectedImage = data.getData();
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                    Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null );
-                    cursor.moveToFirst();
+                    if(selectedImage  != null) {
+                        try {
+                            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                            cursor.moveToFirst();
 
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    filePath = cursor.getString(columnIndex);
-                    cursor.close();
 
-                    yourSelectedImage = BitmapFactory.decodeFile(filePath);
-                    mImage.setImageBitmap(yourSelectedImage);
+                            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                            filePath = cursor.getString(columnIndex);
+                            cursor.close();
 
+                            yourSelectedImage = BitmapFactory.decodeFile(filePath);
+                            mImage.setImageBitmap(yourSelectedImage);
+                        } catch (NullPointerException npe) {
+                            npe.printStackTrace();
+                        }
+                    }
                 }
         }
     }
