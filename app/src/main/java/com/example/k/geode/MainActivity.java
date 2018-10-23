@@ -21,6 +21,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 
+/**Главная активность приложения
+ * - Запрос изображения из галереи
+ * - передача Uri изображения в SendEmailActivity
+ *
+ */
+
+
+
 public class MainActivity extends AppCompatActivity {
     private static final String EXTRA_IMAGE_FILE_PATH = "com.example.k.geode.extra_image_file_path";
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;

@@ -95,11 +95,11 @@ public class SendEmailActivity extends Activity {
 
                 SendEmailActivity.this.startActivity(Intent.createChooser(emailIntent, "Отправка письма..."));
 
-                mutableBitmap.recycle();
             }
         });
 
     }
+
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         Log.d(TAG, "SendEmailActivity.getImageUri() called");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
