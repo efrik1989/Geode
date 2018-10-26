@@ -1,7 +1,5 @@
 package com.example.k.geode;
 
-
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,27 +18,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-
-/**Главная активность приложения
+/**
+ * Главная активность приложения
  * - Запрос изображения из галереи
  * - передача Uri изображения в SendEmailActivity
- *
  */
 
-
-
 public class MainActivity extends AppCompatActivity {
+
     private static final String EXTRA_IMAGE_FILE_PATH = "com.example.k.geode.extra_image_file_path";
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
-
     private static final String TAG = "Geode";
-
+    private static final int ACTIVITY_SELECT_IMAGE = 1234;
     private Button mFileSelectorButton;
     private Button mSendButton;
     private ImageView mImage;
     private Bitmap yourSelectedImage;
     private String filePath;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (yourSelectedImage == null){
+                if (yourSelectedImage == null) {
                     mSendButton.setEnabled(false);
-                }else {
+                } else {
                     Intent intent = new Intent(MainActivity.this, SendEmailActivity.class);
                     intent.putExtra(EXTRA_IMAGE_FILE_PATH, filePath);
 
@@ -72,29 +66,24 @@ public class MainActivity extends AppCompatActivity {
         mFileSelectorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "Select Button Pressed");
+                Log.d(TAG, ".SendEmailActivity.class Select Button Pressed");
                 try {
                     // Проверка разрешения на использованине файлов из галареи
-                    if (ContextCompat.checkSelfPermission(MainActivity.this,
-                            Manifest.permission.READ_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                                Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                             Log.d(TAG, "Permission is not Granted");
 
                         } else {
-                            ActivityCompat.requestPermissions(MainActivity.this,
-                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
                         }
 
                     } else {
                         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                        final int ACTIVITY_SELECT_IMAGE = 1234;
+
                         startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
 
                 }
@@ -135,18 +124,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // получает изображение
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityForResult(int requestCode, int resultCode, Intent data) called");
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch(requestCode) {
-            case 1234 :
+        switch (requestCode) {
+            case 1234:
                 if (resultCode == RESULT_OK) {
                     Uri selectedImage = data.getData();
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                    if(selectedImage  != null) {
+                    if (selectedImage != null) {
                         try {
                             Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
                             cursor.moveToFirst();
@@ -158,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
                             yourSelectedImage = BitmapFactory.decodeFile(filePath);
                             mImage.setImageBitmap(yourSelectedImage);
+
                         } catch (NullPointerException npe) {
                             npe.printStackTrace();
                         }
@@ -171,19 +161,14 @@ public class MainActivity extends AppCompatActivity {
 
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "SendEmailActivity Permission is need to be granted");
                 } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    Log.d(TAG, "SendEmailActivity It's noot good");
+
                 }
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
         }
     }
 
